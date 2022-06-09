@@ -1,14 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import { Provider } from "urql";
 
 import "./index.css";
 import App from "./app";
 import reportWebVitals from "./reportWebVitals";
+import { client } from "./utils/URQLClient";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -16,7 +13,9 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
+    <Provider value={client}>
       <App />
+    </Provider>
   </React.StrictMode>
 );
 
