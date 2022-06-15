@@ -1,0 +1,90 @@
+.book {
+  max-width: 90vw;
+  margin: 0 auto;
+}
+
+.book__title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.book__title small {
+  font-size: 1.4rem;
+  font-weight: normal;
+  display: block;
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+.book__pages {
+  margin-top: 5rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.book__nav {
+  display: flex;
+  justify-content: space-between;
+  margin: 3rem 0;
+}
+
+.book__nav-back,
+.book__nav-next {
+  font-size: 16px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  padding: 13px 20px 13px;
+  outline: 0;
+  border: 1px solid black;
+  cursor: pointer;
+  position: relative;
+  background-color: rgba(0, 0, 0, 0);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.book__nav-back:after,
+.book__nav-next:after {
+  content: "";
+  background-color: #ffe54c;
+  width: 100%;
+  z-index: -1;
+  position: absolute;
+  height: 100%;
+  top: 7px;
+  left: 7px;
+  transition: 0.2s;
+}
+
+.book__nav-back:hover:after,
+.book__nav-next:hover:after {
+  top: 0px;
+  left: 0px;
+}
+
+.book__nav-back img,
+.book__nav-next img {
+  vertical-align: middle;
+  height: 18px;
+  transition: 0.2s;
+}
+
+.book__nav-back:hover img {
+  transform: translateX(-10px);
+}
+
+.book__nav-next:hover img {
+  transform: translateX(10px);
+}
+
+@media (min-width: 768px) {
+  .book__nav-back,
+  .book__nav-next {
+    padding: 13px 50px 13px;
+  }
+}

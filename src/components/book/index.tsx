@@ -1,51 +1,58 @@
-import { FC } from "react";
-import { useQuery } from "urql";
+import { FC, useState } from "react";
 
-import { Book as IBook } from "../../types/book";
+import { Page as IPage, Book as IBook } from "../../types/book";
+import { preparePages } from "../../utils/book";
+import Page from "../page";
+import backArrow from "../../assets/back.svg";
+import nextArrow from "../../assets/next.svg";
+import "./book.css";
 
-const BookQuery = `
-  query GetBooks {
-    book {
-      author
-      title
-      pages {
-        content
-        pageIndex
-        tokens {
-          position
-          value
-        }
-      }
-    }
-  }
-`;
+const Book: FC<IBook> = ({ author, title, pages }) => {
+  const [parsedPages] = useState<IPage[][]>(preparePages(pages));
+  const [currentPagesIdx, setCurrentPagesIdx] = useState(0);
+  const [currentPages, setCurrentPages] = useState<IPage[]>(
+    parsedPages[currentPagesIdx]
+  );
 
-const Book: FC = () => {
-  const [fetchBooks] = useQuery({
-    query: BookQuery,
-  });
+  const goToNextPages = () => {
+    if (currentPagesIdx === parsedPages.length - 1) return;
 
-  const { data, fetching, error } = fetchBooks;
+    setCurrentPagesIdx(currentPagesIdx + 1);
+    setCurrentPages(parsedPages[currentPagesIdx + 1]);
+  };
 
-  if (fetching) {
-    return <div className="loading">Loading...</div>;
-  }
+  const goToPreviousPages = () => {
+    if (currentPagesIdx === 0) return;
 
-  if (error) {
-    return <div className="error">{error.message}</div>;
-  }
-
-  const { author, title, pages }: IBook = data?.book;
+    setCurrentPagesIdx(currentPagesIdx - 1);
+    setCurrentPages(parsedPages[currentPagesIdx - 1]);
+  };
 
   return (
-    <>
-      <div className="book">
-        <h3 className="book__title">
-          {title} by <small className="book__author">{author}</small>
-        </h3>
-        <pre>{JSON.stringify(pages)}</pre>
+    <div className="book">
+      <h3 className="book__title">
+        {title} <small className="book__author">{author}</small>
+      </h3>
+      <div className="book__pages">
+        {currentPages.map((currentPage) => (
+          <Page page={currentPage} key={currentPage.pageIndex} />
+        ))}
       </div>
-    </>
+      <div className="book__nav">
+        <div
+          role="button"
+          className="book__nav-back"
+          onClick={goToPreviousPages}
+        >
+          <img src={backArrow} alt="Go to previous page" />
+          Back
+        </div>
+        <div role="button" className="book__nav-next" onClick={goToNextPages}>
+          Next
+          <img src={nextArrow} alt="Go to next page" />
+        </div>
+      </div>
+    </div>
   );
 };
 

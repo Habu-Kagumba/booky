@@ -1,10 +1,9 @@
 .app {
-  min-height: 100vh;
-  width: 100vw;
+  width: 100%;
 }
 
 .app__header {
-  height: 150px;
+  height: 130px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -14,4 +13,28 @@
 .app__logo {
   height: 100px;
   pointer-events: none;
+}
+
+.loading,
+.error {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.loading {
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 3rem;
+}
+
+.error {
+  font-size: 2rem;
+  color: red;
 }

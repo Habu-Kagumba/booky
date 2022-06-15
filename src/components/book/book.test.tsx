@@ -1,38 +1,41 @@
 import React from "react";
-import { graphql } from "msw";
 
 import Book from "./";
-import { render, screen } from "../../utils/tests/test-utils";
+import { render, screen, fireEvent } from "../../utils/tests/test-utils";
+import { bookFactory } from "../../mocks/handlers";
+
+const { author, title, pages } = bookFactory.book;
 
 describe("Book Component", () => {
-  test("loads successfully", async () => {
-    render(<Book />);
+  test("load first 2 pages", async () => {
+    render(<Book author={author} title={title} pages={pages} />);
 
-    await screen.findByRole("heading");
-
-    expect(screen.getByRole("heading")).toHaveTextContent(
-      "Fishing in the Air by Sharon Screech"
-    );
+    const pagesElems = await screen.findAllByTestId("page");
+    expect(pagesElems.length).toBe(2);
+    expect(screen.getByTestId("page-index-left")).toHaveTextContent("1");
+    expect(screen.getByTestId("page-index-right")).toHaveTextContent("2");
   });
 
-  test("load Books error", async () => {
-    const err_msg = 'An error occurred while fetching the "GetBooks" query.';
+  test("go to next page", async () => {
+    render(<Book author={author} title={title} pages={pages} />);
 
-    render(
-      <Book />,
-      graphql.query("GetBooks", (req, res, ctx) => {
-        return res(
-          ctx.errors([
-            {
-              message: err_msg,
-            },
-          ])
-        );
-      })
-    );
+    fireEvent.click(screen.getByText("Next"));
 
-    const errorElement = await screen.findByText(`[GraphQL] ${err_msg}`);
+    const pagesElems = await screen.findAllByTestId("page");
+    expect(pagesElems.length).toBe(2);
+    expect(screen.getByTestId("page-index-left")).toHaveTextContent("3");
+    expect(screen.getByTestId("page-index-right")).toHaveTextContent("4");
+  });
 
-    expect(errorElement).toBeInTheDocument();
+  test("go to previous page", async () => {
+    render(<Book author={author} title={title} pages={pages} />);
+
+    fireEvent.click(screen.getByText("Next"));
+    fireEvent.click(screen.getByText("Back"));
+
+    const pagesElems = await screen.findAllByTestId("page");
+    expect(pagesElems.length).toBe(2);
+    expect(screen.getByTestId("page-index-left")).toHaveTextContent("1");
+    expect(screen.getByTestId("page-index-right")).toHaveTextContent("2");
   });
 });
